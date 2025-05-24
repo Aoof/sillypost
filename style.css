@@ -1,108 +1,381 @@
 /*
  ************* Sillypost CSS page! - CSS by aoof and Art by mt1dr.w *************
  * All rights reserved. Please do reach out if you want to use this code.
- */
-
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech&display=swap');
+ *
+ * To use the table of contents: hover over the text and find the next occurrence. (Use Ctrl+F or # in vim)
+ *
+ * Table of contents:
+ * - CastleWall # The wall itself
+ * - CastleWall_Top # The top part of the wall
+ * - CastleSky # The skybox
+ * - CastleLeftPillar # The left pillar
+ * - CastleLeftTower # The left tower
+ * - CastleRightPillar # The right pillar
+ * - CastleRightTower # The right tower
+ * - CastleDoor # The door of the castle init
+ * - TransitionComponent # The transition component
+ * - ActualCss # The beginning of the actual css of the website
+ * */
 
 :root {
-    --anim-dur: 2s;
-    --sky-move: 20s;
-    --trans-offset: 2s;
+    /* Animation variables */
+    --animation-duration: 2s; /* The duration till the castle moves away and shows the sillypost profile */
+    --skybox-movement: 20s; /* The speed the skybox is moving, the higher the value, the slower it moves */
+    --transparency-animation-offset: 2s; /* The time the transparency effect starts */
+
+    /* Colors variables */
     --wall-base: #79444a;
-    --wall-base-dark: #5b2f34;
-    --wall-base-light: #9b6a70;
-    --wall-sec: #4b3d44;
-    --wall-sec-dark: #3b2c34;
-    --wall-sec-light: #6b4f56;
-    --wall-tert: #574852;
-    --wall-tert-dark: #3f3534;
-    --wall-tert-light: #7a4f56;
+    --wall-base-darker: #5b2f34;
+    --wall-base-lighter: #9b6a70;
+    --wall-secondary: #4b3d44;
+    --wall-secondary-darker: #3b2c34;
+    --wall-secondary-lighter: #6b4f56;
+    --wall-tertiary: #574852;
+    --wall-tertiary-darker: #3f3534;
+    --wall-tertiary-lighter: #7a4f56;
+
     --light: #f2f2f2;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Share Tech', sans-serif;
-    background: #000;
+    background-color: #000;
+    margin: 0;
+    padding: 0;
     color: var(--light);
     min-height: 100vh;
 }
 
+#header-welcome::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 100%;
+    left: -25%;
+    top: 0;
+    z-index: -1;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/Clouds V2-2.png') repeat;
+    background-size: 20vh 20vh;
+    background-position: center;
+    animation: skybox_animation var(--skybox-movement) linear infinite;
+    animation-iteration-count: 1;
+    pointer-events: none;
+}
+
+/* CastleWall
+ * The wall itself
+ * */
+body::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 60vh;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/wall-tileable.png') repeat;
+    background-size: 10vh 10vh;
+    animation: slow_fade calc(var(--animation-duration) + var(--transparency-animation-offset)) ease-in-out forwards,
+               wall_entry_zoom var(--animation-duration) ease-in-out forwards;
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleWall_Top
+ * The top part of the wall
+ * */
+body::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 5vh;
+    left: 0;
+    bottom: 60vh;
+    z-index: 0;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/wall-tileable-horizontally.png') repeat;
+    background-size: 10vh 10vh;
+    animation: slow_fade calc(var(--animation-duration) + var(--transparency-animation-offset)) ease-in-out forwards;
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleSky
+ * The skybox
+ * */
+#header-left::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 40vh;
+    left: -25%;
+    top: 0;
+    z-index: 0;
+    background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/Clouds V2-2.png');
+    background-repeat: repeat-x;
+    background-size: 10% 100%;
+    background-position: center;
+    animation: slow_fade calc(var(--animation-duration) + var(--transparency-animation-offset)) ease-in-out forwards,
+                skybox_animation var(--skybox-movement) linear forwards;
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleLeftPillar
+ * ::after is the left pillar and this is the cylinder's tileable part
+ * */
+#wrapper::after {
+    content: "";
+    position: fixed;
+    width: 20vh;
+    height: 100%;
+    top: 20vh;
+    left: 0;
+    z-index: 2;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/wall-tileable-vertically.png');
+    background-size: 20vh 20vh;
+    background-repeat: repeat-y;
+    animation: lpillar_entry_animation var(--animation-duration) ease-in-out forwards;
+    filter: drop-shadow(0 0 10px #000);
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleLeftTower
+ * Therefore this is the top part of the cylinder
+ * */
+#header::after {
+    content: "";
+    position: fixed;
+    width: 40vh;
+    height: 100%;
+    top: -20vh;
+    left: -10.5vh;
+    z-index: 3;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/tower-top.png');
+    background-size: 40vh 60vh;
+    background-repeat: no-repeat;
+    animation: lpillar_entry_animation var(--animation-duration) ease-in-out forwards;
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleRightPillar
+ * ::before is the right pillar and this is the cylinder's tileable part
+ * */
+#wrapper::before {
+    content: "";
+    position: fixed;
+    width: 20vh;
+    height: 100%;
+    top: 20vh;
+    right: 0;
+    z-index: 2;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/wall-tileable-vertically.png');
+    background-size: 20vh 20vh;
+    background-repeat: repeat-y;
+    animation: rpillar_entry_animation var(--animation-duration) ease-in-out forwards;
+    filter: drop-shadow(0 0 10px #000);
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleRightTower
+ * Therefore this is the top part of the cylinder
+ * */
+#header::before {
+    content: "";
+    position: fixed;
+    width: 40vh;
+    height: 100%;
+    top: -20vh;
+    right: -9.5vh;
+    z-index: 3;
+    background: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/tower-top.png');
+    background-size: 40vh 60vh;
+    background-repeat: no-repeat;
+    animation: rpillar_entry_animation var(--animation-duration) ease-in-out forwards;
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* CastleDoor
+ * The door of the castle init
+ * */
+#header-left::after {
+    content: "";
+    position: fixed;
+    width: 40vh;
+    height: 40vh;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0);
+    z-index: 4;
+    background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-closed.png');
+    background-size: 40vh 40vh;
+    background-repeat: no-repeat;
+    animation: door_entry_animation var(--animation-duration) ease-in-out forwards,
+               slow_fade calc(var(--animation-duration) + var(--transparency-animation-offset)) ease-in-out forwards;
+    filter: drop-shadow(0 0 10px #000);
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* TransitionComponent
+ * The transition component
+ * */
+#header-right::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/wall-tileable.png');
+    background-size: 10vh 10vh;
+    background-repeat: repeat;
+    background-position: center;
+    opacity: 0;
+    animation: transition_animation var(--transparency-animation-offset) ease-in-out forwards;
+    animation-delay: var(--animation-duration);
+    filter: invert(18%) sepia(27%) saturate(11%) hue-rotate(1deg) brightness(92%) contrast(94%);
+    pointer-events: none;
+    animation-iteration-count: 1;
+}
+
+/* ActualCss
+ * The beginning of the actual css of the website
+ * */
 #wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background: var(--wall-tert);
+    background-color: var(--wall-tertiary);
 }
 
+/* Header Styles */
 #header {
-    background: var(--wall-sec-dark);
+    background: var(--wall-secondary-darker);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-#header-left { display: flex; align-items: center; gap: 20px; }
-#logo { height: 40px; border-radius: 8px; }
-#search-bar { display: flex; gap: 10px; align-items: center; }
-#search-bar label { font-weight: 500; color: var(--light); }
+#header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#logo {
+    height: 40px;
+    border-radius: 8px;
+}
+
+#search-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#search-bar label {
+    font-weight: 500;
+    color: var(--light);
+}
 
 #search-bar input[type="search"] {
     padding: 8px 12px;
-    border: 2px solid var(--wall-tert);
+    border: 2px solid var(--wall-tertiary);
     border-radius: 8px;
-    background: var(--wall-base-dark);
+    background: var(--wall-base-darker);
     color: var(--light);
     font-size: 14px;
 }
 
-#search-bar input[type="submit"], input[type="submit"] {
+#search-bar input[type="submit"], 
+input[type="submit"] {
     padding: 8px 16px;
-    background: var(--wall-base-light);
+    background: var(--wall-base-lighter);
     border: none;
     border-radius: 8px;
     color: var(--light);
     cursor: pointer;
     font-weight: 500;
-    transition: background .3s ease;
+    transition: background 0.3s ease;
 }
 
-#search-bar input[type="submit"]:hover, input[type="submit"]:hover {
-    background: var(--wall-tert-light);
+#search-bar input[type="submit"]:hover,
+input[type="submit"]:hover {
+    background: var(--wall-tertiary-lighter);
 }
 
-#header-right { display: flex; align-items: center; gap: 20px; }
-#header-actions { display: flex; gap: 10px; }
+#header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#header-actions {
+    display: flex;
+    gap: 10px;
+}
 
 #header-showcase {
     display: flex;
     gap: 15px;
     align-items: center;
     padding: 10px;
-    background: var(--wall-tert);
+    background: var(--wall-tertiary);
     border-radius: 8px;
 }
 
-#header-showcase div { display: flex; align-items: center; gap: 5px; font-size: 14px; }
-#header-showcase img { width: 20px; height: 20px; }
-#header-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid var(--wall-base-light); }
-#header-welcome { font-weight: 500; }
-#header-welcome a { color: var(--wall-base-light); text-decoration: none; }
+#header-showcase div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
 
+#header-showcase img {
+    width: 20px;
+    height: 20px;
+}
+
+#header-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid var(--wall-base-lighter);
+}
+
+#header-welcome {
+    font-weight: 500;
+}
+
+#header-welcome a {
+    color: var(--wall-base-lighter);
+    text-decoration: none;
+}
+
+/* Navigation Styles */
 #navbar {
-    background: var(--wall-tert);
+    background: var(--wall-tertiary);
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 #navbar a {
@@ -110,17 +383,20 @@ body {
     text-decoration: none;
     padding: 8px 12px;
     border-radius: 6px;
-    transition: background .3s ease;
+    transition: background 0.3s ease;
     font-weight: 500;
 }
 
-#navbar a:active { background: var(--wall-base-light); }
+#navbar a:active {
+    background: var(--wall-base-lighter);
+}
 
+/* Profile Styles */
 #profile-top {
-    background: var(--wall-sec-dark);
+    background: var(--wall-secondary-darker);
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 #profile-top-left {
@@ -135,24 +411,60 @@ body {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    border: 4px solid var(--wall-base-light);
+    border: 4px solid var(--wall-base-lighter);
 }
 
-#profile-top-right { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-#profile-top-right h1 { color: var(--wall-base-light); font-size: 2.5em; margin-bottom: 10px; }
-#profile-specifics { margin-top: 20px; line-height: 1.8; }
-#profile-specifics span { display: block; margin-bottom: 8px; }
-#profile-specifics img { width: 16px; height: 16px; vertical-align: middle; margin-right: 5px; }
-#profile-bio { background: var(--wall-tert); padding: 20px; border-radius: 8px; }
-#profile-bio h3 { color: var(--wall-base-light); margin-bottom: 10px; }
-#profile-posts { margin-top: 30px; }
+#profile-top-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+#profile-top-right h1 {
+    color: var(--wall-base-lighter);
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+#profile-specifics {
+    margin-top: 20px;
+    line-height: 1.8;
+}
+
+#profile-specifics span {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#profile-specifics img {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+#profile-bio {
+    background: var(--wall-tertiary);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#profile-bio h3 {
+    color: var(--wall-base-lighter);
+    margin-bottom: 10px;
+}
+
+/* Post Styles */
+#profile-posts {
+    margin-top: 30px;
+}
 
 .post {
-    background: var(--wall-tert);
+    background: var(--wall-tertiary);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .post-author {
@@ -164,12 +476,39 @@ body {
     margin-bottom: 15px;
 }
 
-.post-author img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--wall-base-light); }
-.post-author-names { display: flex; flex-direction: column; gap: 5px; }
-.post-author-display-name { font-weight: bold; font-size: 16px; }
-.post-author-username { color: var(--wall-base-light); font-size: 14px; }
-.post-author-currencies { display: flex; gap: 10px; font-size: 12px; }
-.post-author-currencies img { width: 14px; height: 14px; }
+.post-author img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--wall-base-lighter);
+}
+
+.post-author-names {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.post-author-display-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.post-author-username {
+    color: var(--wall-base-lighter);
+    font-size: 14px;
+}
+
+.post-author-currencies {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+}
+
+.post-author-currencies img {
+    width: 14px;
+    height: 14px;
+}
 
 .ctform button {
     background: var(--wall-base);
@@ -181,226 +520,188 @@ body {
     margin-right: 5px;
 }
 
-.ctform button:disabled { opacity: .5; cursor: not-allowed; }
-.post-content { margin: 15px 0; line-height: 1.6; }
-.post-sketch { max-width: 100%; border-radius: 8px; margin: 15px 0; }
-.post-date { color: var(--wall-base-light); font-size: 12px; margin-top: 15px; text-align: right; }
-
-a, a:visited { color: var(--wall-base-light); text-decoration: none; }
-a:hover { color: var(--wall-tert-light); }
-
-/* Background animations */
-#header-welcome::before,
-#header-left::before {
-    content: "";
-    position: fixed;
-    width: 200%;
-    height: 100%;
-    left: -25%;
-    top: 0;
-    z-index: -1;
-    background: url('https://github.com/Aoof/sillypost/blob/master/Clouds V2-2.png') repeat;
-    background-size: 20vh 20vh;
-    background-position: center;
-    animation: skybox_anim var(--sky-move) linear infinite;
-    pointer-events: none;
+.ctform button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-#header-left::before {
-    height: 40vh;
-    z-index: 0;
-    background-repeat: repeat-x;
-    background-size: 10% 100%;
-    animation: fade_out calc(var(--anim-dur) + var(--trans-offset)) ease-in-out forwards,
-               skybox_anim var(--sky-move) linear forwards;
+.post-content {
+    margin: 15px 0;
+    line-height: 1.6;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 60vh;
-    left: 0;
-    bottom: 0;
-    z-index: 1;
-    background: url('https://github.com/Aoof/sillypost/blob/master/wall-tileable.png') repeat;
-    background-size: 10vh 10vh;
-    animation: fade_out calc(var(--anim-dur) + var(--trans-offset)) ease-in-out forwards,
-               wall_zoom var(--anim-dur) ease-in-out forwards;
-    pointer-events: none;
+.post-sketch {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 15px 0;
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 5vh;
-    left: 0;
-    bottom: 60vh;
-    z-index: 0;
-    background: url('https://github.com/Aoof/sillypost/blob/master/wall-tileable-horizontally.png') repeat;
-    background-size: 10vh 10vh;
-    animation: fade_out calc(var(--anim-dur) + var(--trans-offset)) ease-in-out forwards;
-    pointer-events: none;
+.post-date {
+    color: var(--wall-base-lighter);
+    font-size: 12px;
+    margin-top: 15px;
+    text-align: right;
 }
 
-#wrapper::after,
-#wrapper::before {
-    content: "";
-    position: fixed;
-    width: 20vh;
-    height: 100%;
-    top: 20vh;
-    z-index: 2;
-    background: url('https://github.com/Aoof/sillypost/blob/master/wall-tileable-vertically.png');
-    background-size: 20vh 20vh;
-    background-repeat: repeat-y;
-    filter: drop-shadow(0 0 10px #000);
-    pointer-events: none;
+/* Links */
+a,
+a:visited {
+    color: var(--wall-base-lighter);
+    text-decoration: none;
 }
 
-#wrapper::after {
-    left: 0;
-    animation: pillar_left var(--anim-dur) ease-in-out forwards;
+a:hover {
+    color: var(--wall-tertiary-lighter);
 }
 
-#wrapper::before {
-    right: 0;
-    animation: pillar_right var(--anim-dur) ease-in-out forwards;
-}
-
-#header::after,
-#header::before {
-    content: "";
-    position: fixed;
-    width: 40vh;
-    height: 100%;
-    top: -20vh;
-    z-index: 3;
-    background: url('https://github.com/Aoof/sillypost/blob/master/tower-top.png');
-    background-size: 40vh 60vh;
-    background-repeat: no-repeat;
-    pointer-events: none;
-}
-
-#header::after {
-    left: -10.5vh;
-    animation: pillar_left var(--anim-dur) ease-in-out forwards;
-}
-
-#header::before {
-    right: -9.5vh;
-    animation: pillar_right var(--anim-dur) ease-in-out forwards;
-}
-
-#header-left::after {
-    content: "";
-    position: fixed;
-    width: 40vh;
-    height: 40vh;
-    left: 50%;
-    bottom: 0;
-    transform: translate(-50%, 0);
-    z-index: 4;
-    background: url('https://github.com/Aoof/sillypost/blob/master/door-closed.png');
-    background-size: 40vh 40vh;
-    background-repeat: no-repeat;
-    animation: door_anim var(--anim-dur) ease-in-out forwards,
-               fade_out calc(var(--anim-dur) + var(--trans-offset)) ease-in-out forwards;
-    filter: drop-shadow(0 0 10px #000);
-    pointer-events: none;
-}
-
-#header-right::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 5;
-    background: url('https://github.com/Aoof/sillypost/blob/master/wall-tileable.png') repeat;
-    background-size: 10vh 10vh;
-    background-position: center;
-    opacity: 0;
-    animation: transition_anim var(--trans-offset) ease-in-out forwards;
-    animation-delay: var(--anim-dur);
-    filter: invert(18%) sepia(27%) saturate(11%) hue-rotate(1deg) brightness(92%) contrast(94%);
-    pointer-events: none;
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
-    #wrapper { padding: 10px; }
-    #header { flex-direction: column; gap: 15px; }
-    #navbar { justify-content: center; }
-    #profile-top-right { grid-template-columns: 1fr; }
-    #header-showcase { flex-direction: column; gap: 10px; }
-}
-
-@keyframes fade_out {
-    0% { opacity: 1; display: block; }
-    80% { opacity: 1; display: block; }
-    100% { opacity: 0; display: none; }
-}
-
-@keyframes transition_anim {
-    0% { opacity: 0; display: block; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; display: none; }
-}
-
-@keyframes wall_zoom {
-    0% { transform: scale(1); }
-    80% { transform: scale(1); }
-    100% { transform: scale(4); }
-}
-
-@keyframes pillar_left {
-    0% { transform: translate(0, 0); }
-    80% { transform: translate(0, 0); }
-    100% { transform: translate(-10vh, -20vh); }
-}
-
-@keyframes pillar_right {
-    0% { transform: translate(0, 0); }
-    80% { transform: translate(0, 0); }
-    100% { transform: translate(10vh, -20vh); }
-}
-
-@keyframes skybox_anim {
-    0% { transform: translate(-12.5%, 0); }
-    99% { transform: translate(12.5%, 0); }
-    100% { transform: translate(-12.5%, 0); }
-}
-
-@keyframes door_anim {
-    0% {
-        scale: 1;
-        background-image: url('https://github.com/Aoof/sillypost/blob/master/door-closed.png');
-        transform: translate(-50%, 0);
+    #wrapper {
+        padding: 10px;
     }
-    79% {
-        scale: 1;
-        background-image: url('https://github.com/Aoof/sillypost/blob/master/door-closed.png');
-        transform: translate(-50%, 0);
+    
+    #header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    #navbar {
+        justify-content: center;
+    }
+    
+    #profile-top-right {
+        grid-template-columns: 1fr;
+    }
+    
+    #header-showcase {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+
+@keyframes slow_fade {
+    0% {
+        opacity: 1;
+        display: block;
+    }
+
+    80% {
+        opacity: 1;
+        display: block;
+    }
+
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+@keyframes transition_animation {
+    0% {
+        opacity: 0;
+        display: block;
+    }
+    20% {
+        opacity: 1;
     }
     80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+@keyframes wall_entry_zoom {
+    0% {
+        transform: scale(1);
+    }
+
+    80% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(4);
+    }
+}
+
+@keyframes lpillar_entry_animation {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    80% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(-10vh, -20vh);
+    }
+}
+
+@keyframes rpillar_entry_animation {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    80% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(10vh, -20vh);
+    }
+}
+
+@keyframes skybox_animation {
+    0% {
+        transform: translate(-12.5%, 0);
+    }
+
+    99% {
+        transform: translate(12.5%, 0);
+    }
+
+    100% {
+        transform: translate(-12.5%, 0);
+    }
+}
+
+@keyframes door_entry_animation {
+    0% {
         scale: 1;
-        background-image: url('https://github.com/Aoof/sillypost/blob/master/door-opening-animation.gif');
+        background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-closed.png');
         transform: translate(-50%, 0);
     }
+
+    79% {
+        scale: 1;
+        background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-closed.png');
+        transform: translate(-50%, 0);
+    }
+
+    80% {
+        scale: 1;
+        background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-opening-animation.gif');
+        transform: translate(-50%, 0);
+    }
+
     90% {
         transform: translate(-10%, 0);
-        background-image: url('https://github.com/Aoof/sillypost/blob/master/door-opening-animation.gif');
+        background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-opening-animation.gif');
     }
+
     91% {
         transform: translate(-10%, 0);
-        background-image: url('https://github.com/Aoof/sillypost/blob/master/door-opened.png');
+        background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-opened.png');
     }
+
     100% {
         scale: 5;
         transform: translate(-10%, -15vh);
-        background-image: url('https://github.com/Aoof/sillypost/blob/master/door-opened.png');
+        background-image: url('https://raw.githubusercontent.com/Aoof/sillypost/refs/heads/master/door-opened.png');
     }
 }
